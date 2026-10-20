@@ -1,0 +1,24 @@
+model Model
+	culture: es-MX
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-PE
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
+
+annotation PBI_QueryOrder = ["clientes","productos","ventas"]
+
+ref table clientes
+ref table DateTableTemplate_b22a50a2-4f66-45a9-83c5-d562be52f619
+ref table LocalDateTable_e0c9aae1-2b96-464d-9b95-ccaabf2c9eee
+ref table productos
+ref table ventas
+ref table LocalDateTable_26cb9a0f-fb0b-4609-ac62-de5dcac64848
+
+ref cultureInfo es-MX
+

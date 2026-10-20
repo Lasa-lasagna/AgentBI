@@ -1,0 +1,17 @@
+{
+	"servers": {
+		"powerbi-authoring-local": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@microsoft/powerbi-modeling-mcp@latest",
+				"--start",
+				"--accept-eula"
+			],
+			"environment": {
+				"PBI_MODELING_MCP_ACCEPT_EULA": "true"
+			}
+		}
+	}
+}

@@ -1,0 +1,61 @@
+table clientes
+	lineageTag: 35708530-3f75-4cb4-ac27-8f24581d172a
+
+	column ID_Cliente
+		dataType: string
+		lineageTag: 3d4a4c77-182b-4ea3-867b-719290ad8d34
+		summarizeBy: none
+		sourceColumn: ID_Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nombre
+		dataType: string
+		lineageTag: d2f36a62-bd59-4842-936b-826e9496a288
+		summarizeBy: none
+		sourceColumn: Nombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column Región
+		dataType: string
+		lineageTag: 794faca1-43be-47e3-a21d-39bb3c791eba
+		summarizeBy: none
+		sourceColumn: Región
+
+		annotation SummarizationSetBy = Automatic
+
+	column Segmento
+		dataType: string
+		lineageTag: 211caa5f-2447-44a2-bf1a-0c4cd51ab004
+		summarizeBy: none
+		sourceColumn: Segmento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha_Registro
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 8d694ba5-ab7d-4e6f-b5a9-92d92b027e6a
+		summarizeBy: none
+		sourceColumn: Fecha_Registro
+
+		variation Variation
+			isDefault
+			relationship: 1e8648a9-be31-4ea2-865c-07a62746311b
+			defaultHierarchy: LocalDateTable_e0c9aae1-2b96-464d-9b95-ccaabf2c9eee.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition clientes = m
+		mode: import
+		source =
+				let
+				  Origen = Csv.Document(File.Contents("C:\Users\destr\Downloads\DataExample\clientes.csv"), [Delimiter = ",", Columns = 5, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+				  #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				  #"Tipo de columna cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos", {{"ID_Cliente", type text}, {"Nombre", type text}, {"Región", type text}, {"Segmento", type text}, {"Fecha_Registro", type date}}, "es")
+				in
+				  #"Tipo de columna cambiado"
+

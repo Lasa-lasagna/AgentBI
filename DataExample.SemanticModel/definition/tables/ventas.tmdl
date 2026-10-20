@@ -1,0 +1,126 @@
+table ventas
+	lineageTag: 8f80b423-fcef-4887-acba-9d901c29e18e
+
+	/// Monto total vendido en soles (PEN).
+	measure 'Ventas Totales' = SUM(ventas[Monto_Total_PEN])
+		formatString: "S/ "#,##0
+		lineageTag: 8e97e93a-4ce6-4bf4-96d5-ffe7b08fcb2c
+
+	/// Cantidad total de unidades vendidas.
+	measure 'Unidades Vendidas' = SUM(ventas[Cantidad])
+		formatString: #,##0
+		lineageTag: 1edddc57-d817-4f16-befd-72d7723b9ebb
+
+	/// Número de transacciones de venta distintas.
+	measure 'N.º de Ventas' = DISTINCTCOUNT(ventas[ID_Venta])
+		formatString: #,##0
+		lineageTag: 959d9d7c-8590-4d3e-85d6-616e32979a8e
+
+	/// Monto promedio por transacción.
+	measure 'Ticket Promedio' = DIVIDE([Ventas Totales], [N.º de Ventas])
+		formatString: "S/ "#,##0
+		lineageTag: 971d96f3-420d-4eaf-97c3-35e57718bd35
+
+	/// Participación del producto en el total de ventas.
+	measure 'Participación Producto' =
+			VAR _VentasProducto = [Ventas Totales]
+			VAR _VentasTotal = CALCULATE([Ventas Totales], REMOVEFILTERS(productos))
+			RETURN DIVIDE(_VentasProducto, _VentasTotal)
+		formatString: 0.0%
+		lineageTag: 1ac515a2-7843-45da-bf2a-09040050e418
+
+	column ID_Venta
+		dataType: string
+		lineageTag: d8aa41ef-5d71-4f70-9e11-682b85ea7ad7
+		summarizeBy: none
+		sourceColumn: ID_Venta
+
+		annotation SummarizationSetBy = Automatic
+
+	column Fecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 33c03f91-71e8-4d01-b1c0-7399767b1be3
+		summarizeBy: none
+		sourceColumn: Fecha
+
+		variation Variation
+			isDefault
+			relationship: 778e1557-e0dc-405e-9da6-b55901a87921
+			defaultHierarchy: LocalDateTable_26cb9a0f-fb0b-4609-ac62-de5dcac64848.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ID_Cliente
+		dataType: string
+		lineageTag: 2aadc567-fb1f-4fe9-87dc-c184f9656775
+		summarizeBy: none
+		sourceColumn: ID_Cliente
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID_Producto
+		dataType: string
+		lineageTag: dc3f0af2-c5ec-4a8f-a954-53f7765b281b
+		summarizeBy: none
+		sourceColumn: ID_Producto
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cantidad
+		dataType: int64
+		formatString: 0
+		lineageTag: 1fc1eed2-74ba-4848-96f6-3650af0de928
+		summarizeBy: sum
+		sourceColumn: Cantidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column Descuento_%
+		dataType: int64
+		formatString: 0
+		lineageTag: 00dbc8c1-3cc6-4cf2-b11e-2f11b01f31fa
+		summarizeBy: sum
+		sourceColumn: Descuento_%
+
+		annotation SummarizationSetBy = Automatic
+
+	column Canal
+		dataType: string
+		lineageTag: af4a0afb-0bd0-4262-a8d1-e7a21004984f
+		summarizeBy: none
+		sourceColumn: Canal
+
+		annotation SummarizationSetBy = Automatic
+
+	column Método_Pago
+		dataType: string
+		lineageTag: f2e40c3b-80bf-4449-834e-a5c39072d8f5
+		summarizeBy: none
+		sourceColumn: Método_Pago
+
+		annotation SummarizationSetBy = Automatic
+
+	column Monto_Total_PEN
+		dataType: int64
+		formatString: "S/"\ #,0.00;-"S/"\ #,0.00;"S/"\ #,0.00
+		lineageTag: 7a3ff192-51a7-4549-9886-0c089c651bec
+		summarizeBy: sum
+		sourceColumn: Monto_Total_PEN
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"es-PE"}
+
+	partition ventas = m
+		mode: import
+		source =
+				let
+				  Origen = Csv.Document(File.Contents("C:\Users\destr\Downloads\DataExample\ventas.csv"), [Delimiter = ",", Columns = 9, Encoding = 65001, QuoteStyle = QuoteStyle.None]),
+				  #"Encabezados promovidos" = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				  #"Tipo de columna cambiado" = Table.TransformColumnTypes(#"Encabezados promovidos", {{"ID_Venta", type text}, {"Fecha", type date}, {"ID_Cliente", type text}, {"ID_Producto", type text}, {"Cantidad", Int64.Type}, {"Descuento_%", Int64.Type}, {"Canal", type text}, {"Método_Pago", type text}, {"Monto_Total_PEN", Int64.Type}}, "es")
+				in
+				  #"Tipo de columna cambiado"
+

@@ -1,0 +1,18 @@
+relationship 1e8648a9-be31-4ea2-865c-07a62746311b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: clientes.Fecha_Registro
+	toColumn: LocalDateTable_e0c9aae1-2b96-464d-9b95-ccaabf2c9eee.Date
+
+relationship 778e1557-e0dc-405e-9da6-b55901a87921
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ventas.Fecha
+	toColumn: LocalDateTable_26cb9a0f-fb0b-4609-ac62-de5dcac64848.Date
+
+relationship AutoDetected_1a441e74-7a8d-490f-b83c-e8d3766cc4c3
+	fromColumn: ventas.ID_Cliente
+	toColumn: clientes.ID_Cliente
+
+relationship AutoDetected_b67a8468-d7e9-4b59-9dd6-f32674f3fcf0
+	fromColumn: ventas.ID_Producto
+	toColumn: productos.ID_Producto
+
